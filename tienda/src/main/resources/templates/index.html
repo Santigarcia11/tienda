@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angels & Demons - Tienda Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        /* CUSTOM STYLES */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+            --secondary-color: #2c3e50;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(15, 15, 15, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #ff4757;
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: #ccc !important;
+            margin: 0 10px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #ff4757 !important;
+        }
+
+        .btn-carrito {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 8px 20px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .btn-carrito:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.4);
+            color: white;
+        }
+
+        .carrito-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ffd700;
+            color: #000;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* HEADER PRINCIPAL */
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 71, 87, 0.05) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        /* CATEGORÍAS */
+        .categoria-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin: 40px 0 20px 0;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff4757;
+            display: inline-block;
+        }
+
+        /* TARJETAS DE PRODUCTOS */
+        .producto-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-10px);
+            border-color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+        }
+
+        .producto-imagen {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .producto-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .producto-nombre {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .producto-sabor {
+            color: #ff4757;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .producto-descripcion {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .producto-precios {
+            background: rgba(255, 71, 87, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .precio-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .precio-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .precio-label {
+            color: #aaa;
+        }
+
+        .precio-valor {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* SELECTOR DE TAMAÑO */
+        .size-select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: white;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .size-select:focus {
+            outline: none;
+            border-color: #ff4757;
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+        /* BOTONES */
+        .btn-producto {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .btn-producto:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        .btn-producto:active {
+            transform: translateY(0);
+        }
+
+        /* FOOTER */
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid #ff4757;
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        .footer-link {
+            color: #ff4757;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ADMIN LINK */
+        .admin-link {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .admin-link:hover {
+            transform: scale(1.1);
+            color: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .categoria-title {
+                font-size: 22px;
+            }
+
+            .navbar-brand {
+                font-size: 18px;
+            }
+
+            .btn-carrito {
+                padding: 6px 15px;
+                font-size: 14px;
+            }
+
+            .admin-link {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">🍧 Angels & Demons</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#granizados">🍧 Granizados</a></li>
+                <li class="nav-item"><a class="nav-link" href="#cervezas">🍺 Cervezas</a></li>
+                <li class="nav-item"><a class="nav-link" href="#bebidas">🥤 Bebidas</a></li>
+                <li class="nav-item"><a class="nav-link" href="#otros">📦 Otros</a></li>
+                <li class="nav-item">
+                    <a href="/carrito" class="btn btn-carrito">
+                        🛒 Carrito
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO SECTION -->
+<div class="hero">
+    <h1>🍧 Bienvenido a Angels & Demons</h1>
+    <p>Los mejores granizados, bebidas y complementos para tu día</p>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container py-5">
+    <!-- GRANIZADOS -->
+    <section id="granizados" class="mb-5">
+        <h2 class="categoria-title">🍧 Granizados</h2>
+        <div class="row g-4 mt-2">
+            <div th:each="p : ${productos}" th:if="${p.categoria == 'Granizados'}" class="col-md-6 col-lg-4">
+                <div class="producto-card">
+                    <div class="producto-imagen" th:text="'🍧'"></div>
+                    <div class="producto-body">
+                        <div class="producto-nombre" th:text="${p.nombre}"></div>
+                        <div class="producto-sabor" th:text="${p.licor}"></div>
+                        <div class="producto-descripcion" th:text="${p.descripcion}"></div>
+                        
+                        <div class="producto-precios">
+                            <div class="precio-item">
+                                <span class="precio-label">Pequeño:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Mediano:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Grande:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/carrito/agregar}" method="post" class="mt-auto">
+                            <select name="precio" class="size-select">
+                                <option th:value="${p.precioPequeno}">📌 Pequeño - $<span th:text="${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioMediano}">📌 Mediano - $<span th:text="${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioGrande}">📌 Grande - $<span th:text="${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                            </select>
+                            <input type="hidden" name="nombre" th:value="${p.nombre}">
+                            <button type="submit" class="btn btn-producto">🛒 Agregar al Carrito</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERVEZAS -->
+    <section id="cervezas" class="mb-5">
+        <h2 class="categoria-title">🍺 Cervezas</h2>
+        <div class="row g-4 mt-2">
+            <div th:each="p : ${productos}" th:if="${p.categoria == 'Cervezas'}" class="col-md-6 col-lg-4">
+                <div class="producto-card">
+                    <div class="producto-imagen" th:text="'🍺'"></div>
+                    <div class="producto-body">
+                        <div class="producto-nombre" th:text="${p.nombre}"></div>
+                        <div class="producto-sabor" th:text="${p.licor}"></div>
+                        <div class="producto-descripcion" th:text="${p.descripcion}"></div>
+                        
+                        <div class="producto-precios">
+                            <div class="precio-item">
+                                <span class="precio-label">Pequeño:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Mediano:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Grande:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/carrito/agregar}" method="post" class="mt-auto">
+                            <select name="precio" class="size-select">
+                                <option th:value="${p.precioPequeno}">📌 Pequeño - $<span th:text="${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioMediano}">📌 Mediano - $<span th:text="${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioGrande}">📌 Grande - $<span th:text="${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                            </select>
+                            <input type="hidden" name="nombre" th:value="${p.nombre}">
+                            <button type="submit" class="btn btn-producto">🛒 Agregar al Carrito</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BEBIDAS -->
+    <section id="bebidas" class="mb-5">
+        <h2 class="categoria-title">🥤 Bebidas</h2>
+        <div class="row g-4 mt-2">
+            <div th:each="p : ${productos}" th:if="${p.categoria == 'Bebidas'}" class="col-md-6 col-lg-4">
+                <div class="producto-card">
+                    <div class="producto-imagen" th:text="'🥤'"></div>
+                    <div class="producto-body">
+                        <div class="producto-nombre" th:text="${p.nombre}"></div>
+                        <div class="producto-sabor" th:text="${p.licor}"></div>
+                        <div class="producto-descripcion" th:text="${p.descripcion}"></div>
+                        
+                        <div class="producto-precios">
+                            <div class="precio-item">
+                                <span class="precio-label">Pequeño:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Mediano:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Grande:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/carrito/agregar}" method="post" class="mt-auto">
+                            <select name="precio" class="size-select">
+                                <option th:value="${p.precioPequeno}">📌 Pequeño - $<span th:text="${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioMediano}">📌 Mediano - $<span th:text="${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioGrande}">📌 Grande - $<span th:text="${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                            </select>
+                            <input type="hidden" name="nombre" th:value="${p.nombre}">
+                            <button type="submit" class="btn btn-producto">🛒 Agregar al Carrito</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OTROS -->
+    <section id="otros" class="mb-5">
+        <h2 class="categoria-title">📦 Otros</h2>
+        <div class="row g-4 mt-2">
+            <div th:each="p : ${productos}" th:if="${p.categoria == 'Otros'}" class="col-md-6 col-lg-4">
+                <div class="producto-card">
+                    <div class="producto-imagen" th:text="'📦'"></div>
+                    <div class="producto-body">
+                        <div class="producto-nombre" th:text="${p.nombre}"></div>
+                        <div class="producto-sabor" th:text="${p.licor}"></div>
+                        <div class="producto-descripcion" th:text="${p.descripcion}"></div>
+                        
+                        <div class="producto-precios">
+                            <div class="precio-item">
+                                <span class="precio-label">Pequeño:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Mediano:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                            <div class="precio-item">
+                                <span class="precio-label">Grande:</span>
+                                <span class="precio-valor" th:text="'$' + ${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/carrito/agregar}" method="post" class="mt-auto">
+                            <select name="precio" class="size-select">
+                                <option th:value="${p.precioPequeno}">📌 Pequeño - $<span th:text="${#numbers.formatDecimal(p.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioMediano}">📌 Mediano - $<span th:text="${#numbers.formatDecimal(p.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                                <option th:value="${p.precioGrande}">📌 Grande - $<span th:text="${#numbers.formatDecimal(p.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></span></option>
+                            </select>
+                            <input type="hidden" name="nombre" th:value="${p.nombre}">
+                            <button type="submit" class="btn btn-producto">🛒 Agregar al Carrito</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 Angels & Demons - Todos los derechos reservados</p>
+        <p>
+            <a href="/" class="footer-link">Inicio</a>
+            <a href="/carrito" class="footer-link">Carrito</a>
+            <a href="/pedido/listado" class="footer-link">Pedidos</a>
+        </p>
+    </div>
+</footer>
+
+<!-- BOTÓN ADMIN (FLOTANTE) -->
+<a href="/admin/login" class="admin-link" title="Panel de Administración">⚙️</a>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Productos</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>🧾 Administración de Productos</h2>
+
+    <!-- FORMULARIO CREAR / EDITAR -->
+    <form th:action="@{/admin/productos/guardar}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <!-- 🔑 IMPORTANTE PARA EDITAR -->
+        <input type="hidden" name="id" th:value="${producto.id}">
+
+        <label>Nombre</label>
+        <input type="text" name="nombre" th:value="${producto.nombre}" required>
+
+        <label>Descripción</label>
+        <textarea name="descripcion" required
+                  th:text="${producto.descripcion}"></textarea>
+
+        <label>Categoría</label>
+        <input type="text" name="categoria" th:value="${producto.categoria}">
+
+        <label>Licor</label>
+        <input type="text" name="licor" th:value="${producto.licor}">
+
+        <label>Imagen</label>
+        <input type="file" name="file">
+
+        <hr>
+
+        <h3>💰 Precios por tamaño</h3>
+
+        <label>Precio Pequeño</label>
+        <input type="number" step="0.01" name="precioPequeno"
+               th:value="${producto.precioPequeno}" required>
+
+        <label>Precio Mediano</label>
+        <input type="number" step="0.01" name="precioMediano"
+               th:value="${producto.precioMediano}" required>
+
+        <label>Precio Grande</label>
+        <input type="number" step="0.01" name="precioGrande"
+               th:value="${producto.precioGrande}" required>
+
+        <br><br>
+
+        <button type="submit">💾 Guardar Producto</button>
+
+    </form>
+
+    <hr>
+
+    <!-- LISTADO -->
+    <h3>📦 Productos registrados</h3>
+
+    <table border="1" width="100%">
+
+        <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Licor</th>
+            <th>Pequeño</th>
+            <th>Mediano</th>
+            <th>Grande</th>
+            <th>Acciones</th>
+        </tr>
+
+        <tr th:each="p : ${productos}">
+
+            <td th:text="${p.nombre}"></td>
+            <td th:text="${p.categoria}"></td>
+            <td th:text="${p.licor}"></td>
+
+            <td th:text="${p.precioPequeno}"></td>
+            <td th:text="${p.precioMediano}"></td>
+            <td th:text="${p.precioGrande}"></td>
+
+            <td>
+
+                <!-- ✏️ EDITAR -->
+                <a th:href="@{'/admin/productos/editar/' + ${p.id}}">
+                    ✏️ Editar
+                </a>
+
+                |
+
+                <!-- ❌ ELIMINAR -->
+                <a th:href="@{'/admin/productos/eliminar/' + ${p.id}}">
+                    ❌ Eliminar
+                </a>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+</body>
+</html>

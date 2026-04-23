@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Angels & Demons</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .checkout-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .resumen-pedido {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .item-resumen {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .total {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 15px;
+            text-align: right;
+        }
+        .metodos-pago {
+            margin: 30px 0;
+        }
+        .metodo-opcion {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .metodo-opcion:hover {
+            border-color: #666;
+            background: #f9f9f9;
+        }
+        .metodo-opcion input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .metodo-contenido {
+            flex: 1;
+        }
+        .metodo-titulo {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .metodo-descripcion {
+            color: #666;
+            font-size: 14px;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .btn-pagar {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:hover {
+            background: #1fa857;
+        }
+        .btn-efectivo {
+            background: #FF9800;
+            color: white;
+        }
+        .btn-efectivo:hover {
+            background: #e68900;
+        }
+        .btn-volver {
+            padding: 12px 20px;
+            background: #999;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-volver:hover {
+            background: #777;
+        }
+        .datos-cliente {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .dato {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout-container">
+    <h1>🛒 Finalizar Compra</h1>
+
+    <!-- DATOS DEL CLIENTE -->
+    <div class="datos-cliente">
+        <h3>📋 Información del Pedido</h3>
+        <div class="dato"><strong>Cliente:</strong> <span th:text="${cliente}"></span></div>
+        <div class="dato"><strong>Dirección:</strong> <span th:text="${direccion}"></span></div>
+        <div class="dato"><strong>Celular:</strong> <span th:text="${celular}"></span></div>
+    </div>
+
+    <!-- RESUMEN DEL PEDIDO -->
+    <div class="resumen-pedido">
+        <h3>📦 Resumen del Pedido</h3>
+        <div th:each="item : ${carrito}" class="item-resumen">
+            <span th:text="${item.nombre} + ' (' + ${item.cantidad} + 'x)'"></span>
+            <span th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+        </div>
+        <div class="total">
+            Total: <span th:text="'$' + ${#numbers.formatDecimal(totalCarrito, 0, 'DEFAULT', 0, 'DEFAULT')}"></span>
+        </div>
+    </div>
+
+    <!-- SELECCIONAR MÉTODO DE PAGO -->
+    <form th:action="@{/pedido/procesar}" method="post">
+        <!-- Campos ocultos con datos del cliente -->
+        <input type="hidden" name="cliente" th:value="${cliente}">
+        <input type="hidden" name="direccion" th:value="${direccion}">
+        <input type="hidden" name="celular" th:value="${celular}">
+        <input type="hidden" name="total" th:value="${totalCarrito}">
+
+        <div class="metodos-pago">
+            <h3>💳 Selecciona tu método de pago</h3>
+
+            <!-- OPCIÓN WHATSAPP -->
+            <label class="metodo-opcion">
+                <input type="radio" name="metodoPago" value="WHATSAPP" checked>
+                <div class="metodo-contenido">
+                    <div class="metodo-titulo">💬 WhatsApp</div>
+                    <div class="metodo-descripcion">
+                        Envía tu pedido por WhatsApp al +57 3108941971. Nosotros confirmaremos y coordinaremos contigo.
+                    </div>
+                </div>
+            </label>
+
+            <!-- OPCIÓN EFECTIVO -->
+            <label class="metodo-opcion">
+                <input type="radio" name="metodoPago" value="EFECTIVO">
+                <div class="metodo-contenido">
+                    <div class="metodo-titulo">💵 Efectivo</div>
+                    <div class="metodo-descripcion">
+                        Paga en efectivo al recibir tu pedido. El total será <strong th:text="'$' + ${#numbers.formatDecimal(totalCarrito, 0, 'DEFAULT', 0, 'DEFAULT')}"></strong>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <div class="btn-container">
+            <button type="submit" class="btn-pagar btn-whatsapp" id="btnPagar">
+                ✓ Confirmar Pedido
+            </button>
+        </div>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/carrito" class="btn-volver">← Volver al carrito</a>
+    </div>
+</div>
+
+<script>
+    const radioBotones = document.querySelectorAll('input[name="metodoPago"]');
+    const btnPagar = document.getElementById('btnPagar');
+
+    radioBotones.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'WHATSAPP') {
+                btnPagar.textContent = '💬 Continuar en WhatsApp';
+                btnPagar.className = 'btn-pagar btn-whatsapp';
+            } else if (this.value === 'EFECTIVO') {
+                btnPagar.textContent = '✓ Confirmar Pago en Efectivo';
+                btnPagar.className = 'btn-pagar btn-efectivo';
+            }
+        });
+    });
+
+    // Inicializar con WhatsApp seleccionado
+    btnPagar.textContent = '💬 Continuar en WhatsApp';
+    btnPagar.className = 'btn-pagar btn-whatsapp';
+</script>
+
+</body>
+</html>

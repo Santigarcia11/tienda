@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos - Angels & Demons</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>📦 Panel de Pedidos</h2>
+
+    <p>Control de pedidos en tiempo real del negocio 🍧</p>
+
+    <div class="grid">
+
+        <div class="product-card"
+             th:each="p : ${pedidos}">
+
+            <h3 th:text="${p.producto}"></h3>
+
+            <p>👤 Cliente: <span th:text="${p.cliente}"></span></p>
+
+            <p>📏 Tamaño: <span th:text="${p.tamano}"></span></p>
+
+            <p>💳 Pago: <span th:text="${p.metodoPago}"></span></p>
+
+            <p>💰 Precio: <span th:text="${p.precio}"></span></p>
+
+            <p>⏱ Entrega: <span th:text="${p.tiempoEntrega}"></span></p>
+
+            <!-- ESTADO VISUAL -->
+            <p class="tag"
+               th:text="${p.estado}"
+               th:classappend="${
+                    p.estado == 'PENDIENTE' ? 'pendiente' :
+                    p.estado == 'PREPARANDO' ? 'preparando' :
+                    p.estado == 'LISTO' ? 'listo' :
+                    'entregado'
+               }">
+            </p>
+
+            <!-- ACTUALIZAR PEDIDO -->
+            <form th:action="@{/pedido/estado}" method="post">
+
+                <input type="hidden" name="id" th:value="${p.id}">
+
+                <select name="estado">
+                    <option>PENDIENTE</option>
+                    <option>PREPARANDO</option>
+                    <option>LISTO</option>
+                    <option>ENTREGADO</option>
+                </select>
+
+                <input type="text"
+                       name="tiempoEntrega"
+                       placeholder="Ej: 20 min"
+                       th:value="${p.tiempoEntrega}">
+
+                <button type="submit">Actualizar</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

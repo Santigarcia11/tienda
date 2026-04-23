@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - Angels & Demons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            padding: 20px;
+            color: white;
+        }
+        .sidebar h3 {
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .sidebar a, .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover, .sidebar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .image-preview {
+            max-width: 200px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 8px;
+        }
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+            color: white;
+        }
+        .input-group-text {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+            .sidebar a, .sidebar button {
+                display: inline-block;
+                width: auto;
+                margin-right: 10px;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h3>🔐 Admin</h3>
+    <a href="/admin/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="/admin/productos"><i class="bi bi-boxes"></i> Productos</a>
+    <a href="/admin/extras"><i class="bi bi-plus-circle"></i> Extras</a>
+    <a href="/pedido/listado"><i class="bi bi-receipt"></i> Pedidos</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 th:if="${producto == null}">➕ Nuevo Producto</h1>
+        <h1 th:if="${producto != null}">✏️ Editar Producto</h1>
+        <a href="/admin/productos" class="btn btn-secondary">← Volver</a>
+    </div>
+
+    <div class="form-container">
+        <form th:action="${producto == null ? @{/admin/productos} : @{/admin/productos/{id}(id=${producto.id})}}" 
+              method="post" enctype="multipart/form-data">
+
+            <!-- INFORMACIÓN BÁSICA -->
+            <h5 class="mb-3">ℹ️ Información Básica</h5>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Producto *</label>
+                        <input type="text" class="form-control" name="nombre" 
+                               th:value="${producto != null ? producto.nombre : ''}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Categoría *</label>
+                        <select class="form-select" name="categoria" required>
+                            <option value="">-- Selecciona una categoría --</option>
+                            <option value="Granizados" th:selected="${producto != null && producto.categoria == 'Granizados'}">🍧 Granizados</option>
+                            <option value="Cervezas" th:selected="${producto != null && producto.categoria == 'Cervezas'}">🍺 Cervezas</option>
+                            <option value="Bebidas" th:selected="${producto != null && producto.categoria == 'Bebidas'}">🥤 Bebidas</option>
+                            <option value="Otros" th:selected="${producto != null && producto.categoria == 'Otros'}">📦 Otros</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Tipo/Sabor (ej: Fresa, Chocolate) *</label>
+                        <input type="text" class="form-control" name="licor" 
+                               th:value="${producto != null ? producto.licor : ''}" 
+                               placeholder="Ej: Fresa, Chocolate, Durazno" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Descripción *</label>
+                        <textarea class="form-control" name="descripcion" rows="3" required 
+                                  th:text="${producto != null ? producto.descripcion : ''}"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRECIOS POR TAMAÑO -->
+            <h5 class="mb-3 mt-4">💰 Precios por Tamaño</h5>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Precio Pequeño ($) *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" name="precioPequeno" step="0.01" 
+                                   th:value="${producto != null ? producto.precioPequeno : ''}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Precio Mediano ($) *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" name="precioMediano" step="0.01" 
+                                   th:value="${producto != null ? producto.precioMediano : ''}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Precio Grande ($) *</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" name="precioGrande" step="0.01" 
+                                   th:value="${producto != null ? producto.precioGrande : ''}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IMAGEN -->
+            <h5 class="mb-3 mt-4">🖼️ Imagen del Producto</h5>
+            
+            <div class="form-group">
+                <label class="form-label">Selecciona una imagen</label>
+                <input type="file" class="form-control" name="imagen" accept="image/*">
+                <small class="text-muted">Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB</small>
+                
+                <div th:if="${producto != null && producto.imagen != null}">
+                    <p class="mt-2"><strong>Imagen actual:</strong></p>
+                    <img th:src="${producto.imagen}" class="image-preview" alt="Producto">
+                </div>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="mt-4">
+                <button type="submit" class="btn btn-submit">
+                    <i class="bi bi-check-circle"></i>
+                    <span th:if="${producto == null}">Crear Producto</span>
+                    <span th:if="${producto != null}">Guardar Cambios</span>
+                </button>
+                <a href="/admin/productos" class="btn btn-secondary ms-2">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

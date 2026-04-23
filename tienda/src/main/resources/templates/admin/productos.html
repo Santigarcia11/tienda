@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Angels & Demons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            padding: 20px;
+            color: white;
+        }
+        .sidebar h3 {
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .sidebar a, .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover, .sidebar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        .product-info {
+            padding: 20px;
+        }
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .product-category {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .product-prices {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .btn-group-product {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-sm {
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+            color: white;
+        }
+        .btn-danger {
+            background: #ff4757;
+        }
+        .btn-danger:hover {
+            background: #ff3838;
+        }
+        .header-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .empty-state h3 {
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+            .sidebar a, .sidebar button {
+                display: inline-block;
+                width: auto;
+                margin-right: 10px;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            .product-card {
+                margin-bottom: 15px;
+            }
+            .header-action {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h3>🔐 Admin</h3>
+    <a href="/admin/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="/admin/productos"><i class="bi bi-boxes"></i> Productos</a>
+    <a href="/admin/extras"><i class="bi bi-plus-circle"></i> Extras</a>
+    <a href="/pedido/listado"><i class="bi bi-receipt"></i> Pedidos</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="header-action">
+        <h1>📦 Gestionar Productos</h1>
+        <a href="/admin/productos/nuevo" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Producto
+        </a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(productos)}" class="empty-state">
+        <h3>📭 No hay productos</h3>
+        <p>Comienza a agregar productos a tu catálogo</p>
+        <a href="/admin/productos/nuevo" class="btn btn-primary mt-3">Crear Primer Producto</a>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(productos)}" class="row">
+        <div th:each="producto : ${productos}" class="col-md-6 col-lg-4">
+            <div class="product-card">
+                <img th:src="${producto.imagen != null ? producto.imagen : '/images/default.png'}" 
+                     class="product-image" alt="Producto">
+                <div class="product-info">
+                    <div class="product-name" th:text="${producto.nombre}"></div>
+                    <span class="product-category" th:text="${producto.categoria}"></span>
+                    
+                    <div class="product-prices">
+                        <div><strong th:text="${'Sabor: ' + producto.licor}"></strong></div>
+                        <div class="mt-2">
+                            <div th:text="'S: $' + ${#numbers.formatDecimal(producto.precioPequeno, 0, 'DEFAULT', 0, 'DEFAULT')}"></div>
+                            <div th:text="'M: $' + ${#numbers.formatDecimal(producto.precioMediano, 0, 'DEFAULT', 0, 'DEFAULT')}"></div>
+                            <div th:text="'L: $' + ${#numbers.formatDecimal(producto.precioGrande, 0, 'DEFAULT', 0, 'DEFAULT')}"></div>
+                        </div>
+                    </div>
+
+                    <p class="text-muted small" th:text="${producto.descripcion}"></p>
+
+                    <div class="btn-group-product">
+                        <a th:href="@{/admin/productos/{id}/editar(id=${producto.id})}" 
+                           class="btn btn-sm btn-primary flex-grow-1">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a th:href="@{/admin/productos/{id}/eliminar(id=${producto.id})}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('¿Eliminar este producto?')">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
